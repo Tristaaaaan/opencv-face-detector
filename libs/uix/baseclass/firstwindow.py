@@ -25,9 +25,7 @@ if platform == 'android':
     index = CAMERA_INDEX['front']
 
 
-class FirstWindow(Screen):
-
-    Builder.load_file('libs/uix/kv/firstwindow.kv')
+class AndroidCamera(Camera):
 
     # Trained Model
     face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
@@ -42,7 +40,7 @@ class FirstWindow(Screen):
         if self._camera._buffer is None:
             return None
 
-        super(FirstWindow, self).on_tex(*l)
+        super(AndroidCamera, self).on_tex(*l)
         self.texture = Texture.create(
             size=np.flip(self.resolution), colorfmt='rgb')
         frame = self.frame_from_buf()
@@ -67,13 +65,14 @@ class FirstWindow(Screen):
         # Transfer to Screen
         face_detected = self.face_det(frame_rgb)
 
-        self.update_face_status(face_detected)
+        FirstWindow().update_face_status(face_detected)
 
         flipped = np.flip(frame_rgb, 0)
         buf = flipped.tobytes()
         self.texture.blit_buffer(buf, colorfmt='rgb', bufferfmt='ubyte')
 
     # Detection
+
     def face_det(self, frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         resized = cv2.resize(
@@ -86,6 +85,11 @@ class FirstWindow(Screen):
                           (int((x + w) * self.ratio), int((y + h) * self.ratio)), (0, 255, 0), 2)
 
         return len(faces) != 0
+
+
+class FirstWindow(Screen):
+
+    Builder.load_file('libs/uix/kv/firstwindow.kv')
 
     def update_face_status(self, detected):
         if detected:
