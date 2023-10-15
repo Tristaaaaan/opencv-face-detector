@@ -1,21 +1,9 @@
-# First Window
 <FirstWindow>:
     name: "first"
-    category: category
-    MDBoxLayout:
+    BoxLayout:
         orientation: 'vertical'
-        size_hint: .9, .9
-        pos_hint: {'center_x': .5, 'center_y': .5}
+        md_bg_color: 'grey'
         AndroidCamera:
             fit_mode: 'contain'
             play: True
-        MDLabel:
-            size_hint_y: .2
-            halign: 'center'
-            md_bg_color: 'grey'
-            id: category
-            theme_text_color: 'Custom'
-            text_color: 'white'
-            text: 'No Face Detected'
-            font_name: 'assets/fonts/Lexend-Light.ttf'
 
