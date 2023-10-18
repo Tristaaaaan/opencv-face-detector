@@ -1,6 +1,7 @@
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 from kivymd.app import MDApp
+from kivymd.uix.button import MDFlatButton
 
 from kivy.lang import Builder
 from kivy.graphics.texture import Texture
@@ -94,6 +95,23 @@ class AndroidCamera(Camera):
             MDApp.get_running_app().root.first.ids.category.text = "Face detected"
         else:
             MDApp.get_running_app().root.first.ids.category.text = "No face detected"
+
+    def capture_and_save(self):
+        # Capture the current frame
+        frame = self.frame_from_buf()
+
+        # Save the frame to the local storage
+        image_filename = "captured_image.png"
+        cv2.imwrite(image_filename, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+
+        # Update face status (you may want to modify this part based on your use case)
+        self.update_face_status(detected=False)
+
+        # Update the source of the Image widget
+        MDApp.get_running_app().root.first.ids.captured_image.source = image_filename
+
+        # Display a message or perform any other action
+        print(f"Image captured and saved as {image_filename}")
 
 
 class FirstWindow(Screen):
