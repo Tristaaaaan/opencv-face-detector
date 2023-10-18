@@ -2,15 +2,15 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 
 from kivymd.app import MDApp
 from kivymd.uix.button import MDFlatButton
-
+from datetime import datetime
 from kivy.lang import Builder
 from kivy.graphics.texture import Texture
 from kivy.uix.camera import Camera
 from kivy.utils import platform
-
+from os.path import dirname, join
 import numpy as np
 import cv2
-
+from androidstorage4kivy import SharedStorage
 if platform == 'android':
     from jnius import autoclass
     from android.permissions import request_permissions, Permission
@@ -28,6 +28,8 @@ if platform == 'android':
                     'back': CameraInfo.CAMERA_FACING_BACK}
     index = CAMERA_INDEX['front']
 
+    # Environment
+    Environment = autoclass('android.os.Environment')
 
 class AndroidCamera(Camera):
 
@@ -80,6 +82,7 @@ class AndroidCamera(Camera):
     def face_det(self, frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         resized = cv2.resize(
+            
             gray, (self.face_resolution[1], self.face_resolution[0]))
         faces = self.face_cascade.detectMultiScale(resized, 1.3, 2)
         if len(faces) != 0:
@@ -98,14 +101,23 @@ class AndroidCamera(Camera):
 
     def capture_and_save(self):
         # Capture the current frame
+
+        ss = SharedStorage()
         frame = self.frame_from_buf()
 
-        # Save the frame to the local storage
-        image_filename = "captured_image.png"
+        # Generate a unique filename with timestamp
+        current_datetime = datetime.now()
+        timestamp = current_datetime.strftime("%Y%m%d%H%M%S")  # YearMonthDayHourMinuteSecond
+        image_filename = f"{timestamp}.png"
+
         cv2.imwrite(image_filename, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
         # Update face status (you may want to modify this part based on your use case)
         self.update_face_status(detected=False)
+
+        # Get the path to the DCIM camera directory
+        save_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath()
+        ss.copy_to_shared(image_filename, save_path)
 
         # Update the source of the Image widget
         MDApp.get_running_app().root.first.ids.captured_image.source = image_filename
