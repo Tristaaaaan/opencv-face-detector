@@ -1,0 +1,89 @@
+# Main Window:
+<MainWindow>:
+    name: "main"
+    current_date: current_date
+    MDBoxLayout:
+        md_bg_color: [224/255, 224/255, 224/255, 1]
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        MDBoxLayout:
+            orientation: 'vertical'
+            size_hint_y: .9
+            pos_hint: {'center_x': .5, 'center_y': .5}
+            MDBoxLayout:
+                orientation: 'vertical'
+                size_hint: .9, .5
+                padding: [20, 0, 20, 0]
+                radius: [25, 25, 25, 25]
+                md_bg_color: [114/255, 89/255, 89/255, 1]
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                MDLabel: 
+                    halign: 'left'
+                    size_hint_x: 1
+                    theme_text_color: 'Custom'
+                    text_color: 'white'
+                    font_size: '35sp'
+                    text: 'Good Day!'
+                    font_name: 'assets/fonts/Lexend-Light.ttf'
+                MDLabel: 
+                    halign: 'left'
+                    size_hint_x: 1
+                    id: current_date
+                    theme_text_color: 'Custom'
+                    text_color: 'white'
+                    font_name: 'assets/fonts/Lexend-Light.ttf'
+            MDBoxLayout:
+                orientation: 'horizontal'
+                size_hint: .9, .5
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                spacing: '20dp'
+                padding: [0, 20, 0, 0]
+
+                ElementCard:
+                    md_bg_color: [114/255, 89/255, 89/255, 1]
+                    image: "./assets/icons/monitoring.png"
+                    text: "Start Monitoring"
+                    on_release: 
+                        root.start_detection()
+
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: 1
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+                    spacing: '20dp'
+                    ElementCard:
+                        md_bg_color: [114/255, 89/255, 89/255, 1]
+                        image: "./assets/icons/history.png"
+                        text: "History"
+                        on_release: 
+                            root.manager.current = "history"
+                            root.manager.transition.direction = "up"
+                    ElementCard:
+                        md_bg_color: [114/255, 89/255, 89/255, 1]
+                        image: "./assets/icons/setting.png"
+                        text: "Settings"
+                        on_release: 
+                            root.manager.current = "settings"
+                            root.manager.transition.direction = "up"
+<ElementCard@MDCard>:
+    padding:dp(10)
+    spacing:dp(5)
+    pos_hint: {'center_x': .5, 'center_y': .5}
+    radius:dp(25)
+    ripple_behavior: True
+    image: ''
+    text: ''
+    orientation:'vertical'
+    Image:
+        source:root.image
+    MDBoxLayout:
+        orientation:'vertical'
+        MDLabel:
+            halign:"center"
+            text:root.text
+            text_color: 'white'
+            theme_text_color: 'Custom'
+            font_style:"H6"
+      #  MDLabel:
+           # halign:"center"
+           # text:root.subtext
+           # font_style:"Caption"

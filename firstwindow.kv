@@ -1,34 +1,84 @@
 # First Window
 <FirstWindow>:
     name: "first"
-    category: category
-    captured_image: captured_image
     MDBoxLayout:
-        orientation: 'vertical'
-        size_hint: .9, .9
+        md_bg_color: [224/255, 224/255, 224/255, 1]
         pos_hint: {'center_x': .5, 'center_y': .5}
-        spacing: '10dp'
-        AndroidCamera:
-            id: camera_widget
-            fit_mode: 'contain'
-            play: True
-        MDLabel:
+        size_hint: 1, 1
+        orientation: 'vertical'
+        MDBoxLayout:
             size_hint_y: .2
-            halign: 'center'
-            md_bg_color: 'grey'
-            id: category
-            theme_text_color: 'Custom'
-            text_color: 'white'
-            text: 'No Face Detected'
-            font_name: 'assets/fonts/Lexend-Light.ttf'
-        MDFlatButton:
-            text: 'Capture'
             pos_hint: {'center_x': .5, 'center_y': .5}
-            md_bg_color: 'grey'
-            theme_text_color: 'Custom'
-            text_color: 'white'
-            on_release:
-                camera_widget.capture_and_save()
-        Image:
-            id: captured_image
-            source: ''  
+            padding: [10, 0, 10, 0]
+            MDRelativeLayout:
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                size_hint: 1, 1
+                MDIconButton:
+                    pos_hint: {'center_y': .5}
+                    icon: 'arrow-left'
+                    halign: 'right'
+                    border: [20, 20, 20, 20]
+                    text_color: [114/255, 89/255, 89/255, 1]
+                    theme_text_color: 'Custom'
+                    on_release:
+                        root.switch_to_main()
+                MDLabel:
+                    text: 'Monitoring In Progress'
+                    halign: 'center'
+                    font_size: '35sp'
+                    font_name: 'assets/fonts/Lexend-Bold.ttf'
+                    text_color: [114/255, 89/255, 89/255, 1]
+                    theme_text_color: 'Custom'
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 1
+            md_bg_color: [224/255, 224/255, 224/255, 1]
+            pos_hint: {'center_x': .5, 'center_y': .5}
+            spacing: '10dp'
+            MDBoxLayout:
+                size_hint: 1, 1
+                md_bg_color: [224/255, 224/255, 224/255, 1]
+                AndroidCamera:
+                    id: camera_widget
+                    fit_mode: 'contain'
+                    play: True
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: [20, 0, 20, 20]
+                MDCard:
+                    md_bg_color: [114/255, 89/255, 89/255, 1]
+                    spacing: 20
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: .6
+                        pos_hint: {'center_x': .5, 'center_y': .5}
+                        MDLabel:
+                            halign: 'center'
+                            theme_text_color: 'Custom'
+                            text_color: 'white'
+                            font_size: '75sp'
+                            text: '2'
+                            font_name: 'assets/fonts/Lexend-Bold.ttf'
+                        MDLabel:
+                            halign: 'center'
+                            theme_text_color: 'Custom'
+                            text_color: 'white'
+                            padding: [20, 20, 20, 20]
+                            font_size: '30sp'
+                            text: 'Detected'
+                            font_name: 'assets/fonts/Lexend-Medium.ttf'
+                        MDLabel:
+                            halign: 'center'
+                            padding: [20, 40, 20, 20]
+                            theme_text_color: 'Custom'
+                            text_color: 'white'
+                            font_size: '30sp'
+                            text: '25:04'
+                            font_name: 'assets/fonts/Lexend-Bold.ttf'
+
+                        MDLabel:
+                            halign: 'center'
+                            theme_text_color: 'Custom'
+                            text_color: 'white'
+                            text: 'Detection Length'
+                            font_name: 'assets/fonts/Lexend-Regular.ttf'

@@ -1,5 +1,6 @@
 from kivy.uix.screenmanager import ScreenManager, Screen
-
+import datetime
+from kivymd.uix.pickers import MDDatePicker
 from kivymd.app import MDApp
 from kivymd.uix.button import MDFlatButton
 from datetime import datetime
@@ -10,8 +11,15 @@ from kivy.utils import platform
 from os.path import dirname, join
 import numpy as np
 import cv2
-from androidstorage4kivy import SharedStorage
+from kivy.clock import Clock
+from kivy.properties import StringProperty, ColorProperty
+from kivymd.uix.card import MDCard
+from kivymd.uix.label import MDLabel
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.dialog import MDDialog
+
 if platform == 'android':
+    from androidstorage4kivy import SharedStorage
     from jnius import autoclass
     from android.permissions import request_permissions, Permission
 
@@ -30,6 +38,7 @@ if platform == 'android':
 
     # Environment
     Environment = autoclass('android.os.Environment')
+
 
 class AndroidCamera(Camera):
 
@@ -71,8 +80,6 @@ class AndroidCamera(Camera):
         # Transfer to Screen
         face_detected = self.face_det(frame_rgb)
 
-        self.update_face_status(face_detected)
-
         flipped = np.flip(frame_rgb, 0)
         buf = flipped.tobytes()
         self.texture.blit_buffer(buf, colorfmt='rgb', bufferfmt='ubyte')
@@ -82,7 +89,7 @@ class AndroidCamera(Camera):
     def face_det(self, frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         resized = cv2.resize(
-            
+
             gray, (self.face_resolution[1], self.face_resolution[0]))
         faces = self.face_cascade.detectMultiScale(resized, 1.3, 2)
         if len(faces) != 0:
@@ -93,42 +100,134 @@ class AndroidCamera(Camera):
 
         return len(faces) != 0
 
-    def update_face_status(self, detected):
-        if detected:
-            MDApp.get_running_app().root.first.ids.category.text = "Face detected"
-        else:
-            MDApp.get_running_app().root.first.ids.category.text = "No face detected"
 
-    def capture_and_save(self):
-        # Capture the current frame
+class MainWindow(Screen):
 
-        ss = SharedStorage()
-        frame = self.frame_from_buf()
+    Builder.load_file('mainwindow.kv')
 
-        # Generate a unique filename with timestamp
-        current_datetime = datetime.now()
-        timestamp = current_datetime.strftime("%Y%m%d%H%M%S")  # YearMonthDayHourMinuteSecond
-        image_filename = f"{timestamp}.png"
+    def start_detection(self):
+        self.manager.current = "first"
+        self.manager.transition.direction = "up"
 
-        cv2.imwrite(image_filename, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Clock.schedule_once(self.date)
 
-        # Update face status (you may want to modify this part based on your use case)
-        self.update_face_status(detected=False)
+    def date(self, *args):
+        # Define the format you want
+        date_format = "%A, %B %d, %Y"
 
-        # Get the path to the DCIM camera directory
-        save_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath()
-        ss.copy_to_shared(image_filename, save_path)
+        # Get the current date in the specified format
+        current_date = datetime.now().strftime(date_format)
 
-        # Update the source of the Image widget
-        MDApp.get_running_app().root.first.ids.captured_image.source = image_filename
-
-        # Display a message or perform any other action
-        print(f"Image captured and saved as {image_filename}")
+        self.ids.current_date.text = current_date
 
 
 class FirstWindow(Screen):
 
     Builder.load_file('firstwindow.kv')
+
+    def switch_to_main(self):
+        self.manager.current = "main"
+        self.manager.transition.direction = "right"
+
+
+class HistoryWindow(Screen):
+
+    Builder.load_file('historywindow.kv')
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Clock.schedule_once(self.data_)
+
+    def data_(self, *args):
+
+        # Add more texts as needed
+        generated_texts = ['Text1', 'Text2', 'Text3', 'Text3', 'Text3']
+
+        for generated_text in generated_texts:
+            self.identity = '2 Detected'
+            self.background_color = (321/255, 245/255, 245/255, 1)
+            self.icon = 'check'
+            self.color = [0, 0, 0, 1]
+            self.identity_color = [224/255, 224/255, 224/255, 1]
+            self.identity_bg = [1, 1, 1, 1]
+            self.id_text_color = [1, 1, 1, 1]
+            self.date = 'Wednesday, November 8, 2023'
+
+            add_bot = Chats(
+                text=generated_text, identity=self.identity, background_color=self.background_color, icon=self.icon, context_color=self.color, identity_color=self.identity_color, identity_bg=self.identity_bg, id_text_color=self.id_text_color, date=self.date)
+
+            self.ids.listexpenses.add_widget(add_bot)
+
+    def switch_to_main(self):
+        self.manager.current = "main"
+        self.manager.transition.direction = "right"
+
+
+class DialogContent(MDBoxLayout):
+
+    """Customize dialog box for user to insert their expenses"""
+    # Initiliaze date to the current date
+
+    def cancel(self):
+        MDApp.get_running_app().root.settings.close_dialog()
+
+    def on_kv_post(self, base_widget):
+        self.ids.seconds_bg.md_bg_color = [114/255, 89/255, 89/255, 1]
+        self.ids.minutes_bg.md_bg_color = [125/255, 125/255, 125/255, 1]
+        self.ids.hours_bg.md_bg_color = [125/255, 125/255, 125/255, 1]
+
+        return super().on_kv_post(base_widget)
+
+    def color(self, background, label):
+        self.ids.seconds_bg.md_bg_color = [125/255, 125/255, 125/255, 1]
+        self.ids.minutes_bg.md_bg_color = [125/255, 125/255, 125/255, 1]
+        self.ids.hours_bg.md_bg_color = [125/255, 125/255, 125/255, 1]
+
+        background.md_bg_color = [114/255, 89/255, 89/255, 1]
+
+
+class SettingsWindow(Screen):
+
+    Builder.load_file('settingswindow.kv')
+
+    def switch_to_main(self):
+        self.manager.current = "main"
+        self.manager.transition.direction = "right"
+
+    def config_length(self):
+        self.task_list_dialog = MDDialog(
+            title="Configure Detection Length",
+            type="custom",
+            size_hint_x=0.9,
+            size_hint_y=None,
+            content_cls=DialogContent(),
+        )
+
+        self.task_list_dialog.open()
+
+    def close_dialog(self, *args):
+        self.task_list_dialog.dismiss()
+
+
+class CustomLabel(MDLabel):
+    pass
+
+
+class Chats(MDCard):
+    text = StringProperty()
+    identity = StringProperty()
+    date = StringProperty()
+    background_color = ColorProperty()
+    icon = StringProperty()
+    context_color = ColorProperty()
+    identity_color = ColorProperty()
+    identity_bg = ColorProperty()
+    id_text_color = ColorProperty()
+
+    def switch_screen(self):
+        print('????')
 
 
 class WindowManager(ScreenManager):
