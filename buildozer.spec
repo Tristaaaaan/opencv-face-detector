@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = Opencv Android
+title = SURI Demo
 
 # (str) Package name
-package.name = OC2A
+package.name = SuriDemo
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.test
@@ -37,21 +37,21 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy==2.2.1,opencv==4.8.0,numpy,https://github.com/kivymd/KivyMD/archive/master.zip,androidstorage4kivy
+requirements = python3,kivy==2.2.1,opencv==4.8.0,numpy,https://github.com/kivymd/KivyMD/archive/master.zip,androidstorage4kivy,pillow
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-#presplash.filename = %(source.dir)s/data/presplash.png
+presplash.filename = %(source.dir)s/assets/icons/icon.png
 
 # (str) Icon of the application
-#icon.filename = %(source.dir)s/data/icon.png
+icon.filename = %(source.dir)s/assets/icons/icon.png
 
 # (list) Supported orientations
 # Valid options are: landscape, portrait, portrait-reverse or landscape-reverse
-orientation = portrait
+orientation = landscape
 
 # (list) List of service to declare
 #services = NAME:ENTRYPOINT_TO_PY,NAME2:ENTRYPOINT2_TO_PY
@@ -81,7 +81,7 @@ fullscreen = 0
 # red, blue, green, black, white, gray, cyan, magenta, yellow, lightgray,
 # darkgray, grey, lightgrey, darkgrey, aqua, fuchsia, lime, maroon, navy,
 # olive, purple, silver, teal.
-#android.presplash_color = #FFFFFF
+android.presplash_color = #E0E0E0
 
 # (string) Presplash animation using Lottie format.
 # see https://lottiefiles.com/ for examples and https://airbnb.design/lottie/
@@ -102,7 +102,7 @@ android.permissions = CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
 #android.features = android.hardware.usb.host
 
 # (int) Target Android API, should be as high as possible.
-#android.api = 31
+android.api = 33
 
 # (int) Minimum API your APK / AAB will support.
 #android.minapi = 21

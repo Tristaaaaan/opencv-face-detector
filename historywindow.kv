@@ -6,7 +6,7 @@
         size_hint: 1, 1
         orientation: 'vertical'
         MDBoxLayout:
-            size_hint_y: .1
+            size_hint_y: .2
             pos_hint: {'center_x': .5, 'center_y': .5}
             padding: [10, 0, 10, 0]
             MDRelativeLayout:
@@ -29,20 +29,24 @@
                     text_color: [114/255, 89/255, 89/255, 1]
                     theme_text_color: 'Custom'
         MDBoxLayout:
-            size_hint_y: .9
+            size_hint_y: .8
             ScrollView:
                 MDList:
+                    adaptive_height: True
                     id: listexpenses
                     padding: 0
+                    spacing: 10
 
 <Chats>:
     size_hint_y: None
+    height: content.height
     md_bg_color: [224/255, 224/255, 224/255, 1]
     on_release:
         root.switch_screen()
     MDBoxLayout:
         padding: [5, 0, 5, 0]
         MDBoxLayout:
+            id:content
             spacing: 10
             radius: [10, 40, 40, 10]
             md_bg_color: [114/255, 89/255, 89/255, 1]
